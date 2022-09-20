@@ -1,5 +1,7 @@
 # testing:
-- github actions (release + docker-publish)
-- github package registry (docker-registry)
-- gitlab CICD (release + docker-publish)
-- gitlab container registry (docker)
+- [x] github actions (release)
+- [x] github actions (docker-registry)
+- [x] github package registry (docker-registry)
+- [ ] gitlab CICD (release)
+- [ ] gitlab CICD (docker-publish)
+- [x] gitlab container registry (docker)
