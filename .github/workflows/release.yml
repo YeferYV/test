@@ -13,7 +13,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Build
-      run: cat "test release" > dist/test
+      run: mkdir dist && cat "test release" > dist/test
 
     - name: Release
       uses: softprops/action-gh-release@v1
