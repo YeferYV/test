@@ -28,16 +28,15 @@ jobs:
     # see https://github.com/TriPSs/conventional-changelog-action
     - name: Conventional Changelog Action
       id: changelog
-      uses: TriPSs/conventional-changelog-action@v3
+      uses: TriPSs/conventional-changelog-action@v3.7.1
       with:
-        github-token: ${{ secrets.github_token }}
-        output-file: "false"
+        github-token: ${{ secrets.CHANGELOG_RELEASE }}
 
     - name: Create Release
       uses: actions/create-release@v1
       if: ${{ steps.changelog.outputs.skipped == 'false' }}
       env:
-        GITHUB_TOKEN: ${{ secrets.github_token }}
+        GITHUB_TOKEN: ${{ secrets.CHANGELOG_RELEASE }}
       with:
         tag_name: ${{ steps.changelog.outputs.tag }}
         release_name: ${{ steps.changelog.outputs.tag }}
