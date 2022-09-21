@@ -47,11 +47,20 @@ deploy-job:      # This job runs in the deploy stage.
     - echo "Deploying application..."
     - echo "Application successfully deployed."
 
+docker-publish:
+  stage: deploy
+  # `trigger` is the keyword to create a child pipeline
+  trigger:
+    # Include the configuration file of the child pipeline
+    include: .gitlab/workflows/docker-publish.yml
+    # With this strategy, the parent only succeed if the child succeed too
+    strategy: depend
+
 release_job:
   stage: release
   # `trigger` is the keyword to create a child pipeline
   trigger:
     # Include the configuration file of the child pipeline
-    include: .gitlab/release.yml
+    include: .gitlab/workflows/release.yml
     # With this strategy, the parent only succeed if the child succeed too
     strategy: depend
