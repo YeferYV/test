@@ -86,14 +86,14 @@ docker-build:
     - docker build --pull -t "$CI_REGISTRY_IMAGE${tag}" .
     - docker push "$CI_REGISTRY_IMAGE${tag}"
 
-release_job:
-  stage: release
-  # `trigger` is the keyword to create a child pipeline
-  trigger:
-    # Include the configuration file of the child pipeline
-    include: .gitlab/workflows/release.yml
-    # With this strategy, the parent only succeed if the child succeed too
-    strategy: depend
+# release_job:
+#   stage: release
+#   # `trigger` is the keyword to create a child pipeline
+#   trigger:
+#     # Include the configuration file of the child pipeline
+#     include: .gitlab/workflows/release.yml
+#     # With this strategy, the parent only succeed if the child succeed too
+#     strategy: depend
 
 # build image:
 #     image: docker:20.10.10
