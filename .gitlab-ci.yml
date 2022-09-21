@@ -27,7 +27,7 @@ docker-build:
   # `trigger` is the keyword to create a child pipeline
   trigger:
     # Include the configuration file of the child pipeline
-    include: .gitlab/docker-publish/.gitlab-ci.yml
+    include: .gitlab/workflows/docker-publish.yml
     # With this strategy, the parent only succeed if the child succeed too
     strategy: depend
 
