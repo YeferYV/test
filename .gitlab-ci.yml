@@ -46,7 +46,7 @@
 #   script:
 #     - echo "Deploying application..."
 #     - echo "Application successfully deployed."
-
+#
 # docker-build:
 #   stage: build
 #   # `trigger` is the keyword to create a child pipeline
@@ -56,41 +56,50 @@
 #     # With this strategy, the parent only succeed if the child succeed too
 #     strategy: depend
 
-stages:
-  - build
-  - release
+# stages:
+#   - build
+#   - release
+#
+# docker-build:
+#   stage: build
+#   image: docker:latest
+#   services:
+#     - docker:dind
+#   # Run this job in a branch where a Dockerfile exists
+#   rules:
+#     - if: $CI_COMMIT_TAG                 # Run this job when a tag is created
+#       exists:
+#         - Dockerfile
+#   before_script:
+#     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+#   # Default branch leaves tag empty (= latest tag)
+#   # All other branches are tagged with the escaped branch name (commit ref slug)
+#   script:
+#     - |
+#       if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+#         tag=""
+#         echo "Running on default branch '$CI_DEFAULT_BRANCH': tag = 'latest'"
+#       else
+#         tag=":$CI_COMMIT_REF_SLUG"
+#         echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
+#       fi
+#     - docker build --pull -t "$CI_REGISTRY_IMAGE${tag}" .
+#     - docker push "$CI_REGISTRY_IMAGE${tag}"
+#
+# release_job:
+#   stage: release
+#   # `trigger` is the keyword to create a child pipeline
+#   trigger:
+#     # Include the configuration file of the child pipeline
+#     include: .gitlab/workflows/release.yml
+#     # With this strategy, the parent only succeed if the child succeed too
+#     strategy: depend
 
-docker-build:
-  stage: build
-  image: docker:latest
-  services:
-    - docker:dind
-  # Run this job in a branch where a Dockerfile exists
-  rules:
-    - if: $CI_COMMIT_TAG                 # Run this job when a tag is created
-      exists:
-        - Dockerfile
-  before_script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-  # Default branch leaves tag empty (= latest tag)
-  # All other branches are tagged with the escaped branch name (commit ref slug)
-  script:
-    - |
-      if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
-        tag=""
-        echo "Running on default branch '$CI_DEFAULT_BRANCH': tag = 'latest'"
-      else
-        tag=":$CI_COMMIT_REF_SLUG"
-        echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
-      fi
-    - docker build --pull -t "$CI_REGISTRY_IMAGE${tag}" .
-    - docker push "$CI_REGISTRY_IMAGE${tag}"
-
-release_job:
-  stage: release
-  # `trigger` is the keyword to create a child pipeline
-  trigger:
-    # Include the configuration file of the child pipeline
-    include: .gitlab/workflows/release.yml
-    # With this strategy, the parent only succeed if the child succeed too
-    strategy: depend
+build image:
+    image: docker:20.10.10
+    services:
+        - docker:20.10.10-dind
+    script:
+        - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
+        - docker build -t $CI_REGISTRY_IMAGE .
+        - docker push $CI_REGISTRY_IMAGE
