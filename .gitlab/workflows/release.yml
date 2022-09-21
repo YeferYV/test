@@ -14,3 +14,4 @@ release_job:
       links:
         - name: 'asset1'
           filepath: 'bin/'
+          link_type: 'other' # optional
