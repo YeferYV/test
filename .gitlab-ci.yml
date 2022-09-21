@@ -24,12 +24,13 @@ stages:          # List of stages for jobs, and their order of execution
 
 docker-build:
   stage: build
-  # `trigger` is the keyword to create a child pipeline
-  trigger:
-    # Include the configuration file of the child pipeline
-    include: .gitlab/workflows/docker-publish.yml
-    # With this strategy, the parent only succeed if the child succeed too
-    strategy: depend
+  include: .gitlab/workflows/docker-publish.yml
+  # # `trigger` is the keyword to create a child pipeline
+  # trigger:
+  #   # Include the configuration file of the child pipeline
+  #   include: .gitlab/workflows/docker-publish.yml
+  #   # With this strategy, the parent only succeed if the child succeed too
+  #   strategy: depend
 
 # build-job:       # This job runs in the build stage, which runs first.
 #   stage: build
