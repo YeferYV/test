@@ -6,6 +6,11 @@ release_job:
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   script:
     - echo "running release_job"
+    - mkdir bin && echo "this is a release" > bin/binary
   release:                               # See https://docs.gitlab.com/ee/ci/yaml/#release for available properties
     tag_name: '$CI_COMMIT_TAG'
     description: '$CI_COMMIT_TAG'
+  assets:
+    links:
+      - name: 'asset1'
+        url: 'bin/'
