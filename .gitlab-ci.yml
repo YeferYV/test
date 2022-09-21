@@ -47,7 +47,7 @@ stages:          # List of stages for jobs, and their order of execution
 #     - echo "Deploying application..."
 #     - echo "Application successfully deployed."
 
-docker-publish:
+build-job:
   stage: build
   # `trigger` is the keyword to create a child pipeline
   trigger:
