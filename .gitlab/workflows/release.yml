@@ -49,6 +49,9 @@ release_job:
     - upload_assets
   rules:
     - if: $CI_COMMIT_TAG
+  variables:
+    LINUX_ASSET_LINK: "{\"name\":\"${CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${BINARY}\",\"type\":\"package\"}"
+    # LINUX_ASSET_LINK: '{"name":"hello","url":"${PACKAGE_REGISTRY_URL}/${BINARY}","filepath":"/pretty/url/bin/hello","type:":"other"}'
   script:
     - echo "Release $CI_COMMIT_TAG"
     - |
