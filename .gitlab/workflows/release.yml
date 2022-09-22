@@ -3,6 +3,8 @@ variables:
   # /projects/:id/packages/generic/:package_name/:package_version/:file_name?status=:status
   PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${CI_COMMIT_TAG}"
   BINARY: hello
+  # LINUX_ASSET_LINK: "{\"name\":\"${CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${BINARY}\",\"type\":\"package\"}"
+  LINUX_ASSET_LINK: '{"name":"hello","url":"${PACKAGE_REGISTRY_URL}/${BINARY}","filepath":"/pretty/url/bin/hello","type:":"other"}'
 
 upload_assets:
   stage: prepare
@@ -40,16 +42,13 @@ upload_assets:
 #           filepath: '/pretty/url/bin/hello'
 #           link_type: 'other'
 
-release:
+release_job:
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   stage: release
   needs:
     - upload_assets
   rules:
     - if: $CI_COMMIT_TAG
-  variables:
-    # LINUX_ASSET_LINK: "{\"name\":\"${CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${BINARY}\",\"type\":\"package\"}"
-    LINUX_ASSET_LINK: '{"name":"hello","url":"${PACKAGE_REGISTRY_URL}/${BINARY}","filepath":"/pretty/url/bin/hello","type:":"other"}'
   script:
     - echo "Release $CI_COMMIT_TAG"
     - |
