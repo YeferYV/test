@@ -44,8 +44,8 @@ upload_assets:
     - mkdir bin && echo "this is a test" > bin/${BINARY}
     - echo "${PACKAGE_REGISTRY_URL}/${BINARY}"
     - echo "${CI_JOB_TOKEN}"
-    - |
-      curl -s -f --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file bin/${BINARY} ${PACKAGE_REGISTRY_URL}/${BINARY}
+    # - |
+      # curl -s -f --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file bin/${BINARY} ${PACKAGE_REGISTRY_URL}/${BINARY}
 
 release_job:
   image: registry.gitlab.com/jaime/release-cli:latest
