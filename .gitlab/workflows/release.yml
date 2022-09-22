@@ -26,6 +26,8 @@ release:
   variables:
     LINUX_ASSET_LINK: "{\"name\":\"${CI_COMMIT_TAG}\",\"url\":\"${CI_PROJECT_URL}\",\"type\":\"package\"}"
   script:
+    - echo "running release_job"
+    - mkdir bin && echo "this is a release" > bin/binary
     - |
       release-cli create --name "Release ${CI_COMMIT_TAG}" \
         --tag-name "${CI_COMMIT_TAG}" \
