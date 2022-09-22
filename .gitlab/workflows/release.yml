@@ -49,9 +49,8 @@ release:
     - if: $CI_COMMIT_TAG
   variables:
     # LINUX_ASSET_LINK: "{\"name\":\"${CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${BINARY}\",\"type\":\"package\"}"
-    LINUX_ASSET_LINK: "{\"name\":\"hello\",\"url\":\"${PACKAGE_REGISTRY_URL}/${BINARY}\",\"filepath\":\"/pretty/url/bin/hello\",\"link_type:\":\"other\"}"
+    LINUX_ASSET_LINK: '{"name":"hello","url":"${PACKAGE_REGISTRY_URL}/${BINARY}","filepath":"/pretty/url/bin/hello","type:":"other"}'
   script:
+    - echo "Release $CI_COMMIT_TAG"
     - |
-      release-cli create --name "Release ${CI_COMMIT_TAG}" \
-                         --tag_name "$CI_COMMIT_TAG" \
-                         --assets-link "${LINUX_ASSET_LINK}" \
+      release-cli create --name "Release ${CI_COMMIT_TAG}" --tag_name "${CI_COMMIT_TAG}" --assets-link "${LINUX_ASSET_LINK}"
