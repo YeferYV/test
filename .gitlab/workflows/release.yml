@@ -20,16 +20,59 @@
 #           filepath: 'bin/'
 #           link_type: 'other' # optional
 
-release:
-  stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
-  variables:
-    LINUX_ASSET_LINK: "{\"name\":\"${CI_COMMIT_TAG}\",\"url\":\"${CI_PROJECT_URL}\",\"type\":\"package\"}"
+# release:
+#   stage: release
+#   image: registry.gitlab.com/gitlab-org/release-cli:latest
+#   variables:
+#     LINUX_ASSET_LINK: "{\"name\":\"${CI_COMMIT_TAG}\",\"url\":\"${CI_PROJECT_URL}\",\"type\":\"package\"}"
+#   script:
+#     - echo "running release_job"
+#     - mkdir bin && echo "this is a release" > bin/binary
+#     - |
+#       release-cli create --name "Release ${CI_COMMIT_TAG}" \
+#         --tag-name "${CI_COMMIT_TAG}" \
+#         --assets-link "${LINUX_ASSET_LINK}" \
+#         --upload-dir "bin/"
+
+variables:
+  # /projects/:id/packages/generic/:package_name/:package_version/:file_name?status=:status
+  PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CI_PROJECT_NAME}/${CI_COMMIT_TAG}"
+  BINARY: hello
+
+upload_assets:
+  stage: prepare
+  rules:
+    - if: $CI_COMMIT_TAG
   script:
-    - echo "running release_job"
-    - mkdir bin && echo "this is a release" > bin/binary
+    - mkdir bin && echo "this is a test" > bin/${BINARY}
+    - echo "${PACKAGE_REGISTRY_URL}/${BINARY}"
+    - echo "${CI_JOB_TOKEN}"
     - |
-      release-cli create --name "Release ${CI_COMMIT_TAG}" \
-        --tag-name "${CI_COMMIT_TAG}" \
-        --assets-link "${LINUX_ASSET_LINK}" \
-        --upload-dir "bin/"
+      curl -s -f --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file bin/${BINARY} ${PACKAGE_REGISTRY_URL}/${BINARY}
+
+release_job:
+  image: registry.gitlab.com/jaime/release-cli:latest
+  stage: release
+  needs:
+    - upload_assets
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - echo "Release $CI_COMMIT_TAG"
+  release:
+    name: "Release $CI_COMMIT_TAG"
+    description: "Created using the release-cli"
+    tag_name: $CI_COMMIT_TAG
+    milestones:
+      - 'm1'
+    assets:
+      links:
+        - name: 'asset1'
+          url: 'https://example.com/assets/1'
+          link_type: 'package'
+        - name: 'asset2'
+          url: 'https://example.com/assets/2'
+        - name: 'hello'
+          url: "${PACKAGE_REGISTRY_URL}/${BINARY}"
+          filepath: '/pretty/url/bin/hello'
+          link_type: 'other'
