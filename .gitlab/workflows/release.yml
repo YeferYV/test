@@ -16,41 +16,41 @@ upload_assets:
       curl -s -f --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file bin/${BINARY} ${PACKAGE_REGISTRY_URL}/${BINARY}
 
 # release_job:
-#   image: registry.gitlab.com/jaime/release-cli:latest
+#   image: registry.gitlab.com/gitlab-org/release-cli:latest
 #   stage: release
 #   needs:
 #     - upload_assets
 #   rules:
 #     - if: $CI_COMMIT_TAG
+#   variables:
+#     LINUX_ASSET_LINK: "{\"name\":\"${CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${BINARY}\",\"type\":\"package\"}"
+#     # LINUX_ASSET_LINK: '{"name":"hello","url":"${PACKAGE_REGISTRY_URL}/${BINARY}","filepath":"/pretty/url/bin/hello","type:":"other"}'
 #   script:
 #     - echo "Release $CI_COMMIT_TAG"
-#   release:
-#     name: "Release $CI_COMMIT_TAG"
-#     description: "Created using the release-cli"
-#     tag_name: $CI_COMMIT_TAG
-#     assets:
-#       links:
-#         - name: 'asset1'
-#           url: 'https://example.com/assets/1'
-#           link_type: 'package'
-#         - name: 'asset2'
-#           url: 'https://example.com/assets/2'
-#         - name: 'hello'
-#           url: "${PACKAGE_REGISTRY_URL}/${BINARY}"
-#           filepath: '/pretty/url/bin/hello'
-#           link_type: 'other'
+#     - |
+#       release-cli create --name "Release ${CI_COMMIT_TAG}" --tag-name "$CI_COMMIT_TAG" --assets-link ${LINUX_ASSET_LINK}
 
 release_job:
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  image: registry.gitlab.com/jaime/release-cli:latest
   stage: release
   needs:
     - upload_assets
   rules:
     - if: $CI_COMMIT_TAG
-  variables:
-    LINUX_ASSET_LINK: "{\"name\":\"${CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${BINARY}\",\"type\":\"package\"}"
-    # LINUX_ASSET_LINK: '{"name":"hello","url":"${PACKAGE_REGISTRY_URL}/${BINARY}","filepath":"/pretty/url/bin/hello","type:":"other"}'
   script:
     - echo "Release $CI_COMMIT_TAG"
-    - |
-      release-cli create --name "Release ${CI_COMMIT_TAG}" --tag-name "$CI_COMMIT_TAG" --assets-link ${LINUX_ASSET_LINK}
+  release:
+    name: "Release $CI_COMMIT_TAG"
+    description: "Created using the release-cli"
+    tag_name: $CI_COMMIT_TAG
+    assets:
+      links:
+        - name: 'asset1'
+          url: 'https://example.com/assets/1'
+          link_type: 'package'
+        - name: 'asset2'
+          url: 'https://example.com/assets/2'
+        - name: 'hello'
+          url: "${PACKAGE_REGISTRY_URL}/${BINARY}"
+          filepath: '/pretty/url/bin/hello'
+          link_type: 'other'

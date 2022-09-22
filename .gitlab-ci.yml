@@ -27,12 +27,13 @@ workflow:
 stages:          # List of stages for jobs, and their order of execution
   # - build
   # - test
+  - packages
   - prepare
   - release
   # - deploy
 
 include:
-  # - .gitlab/workflows/docker-publish.yml
+  - .gitlab/workflows/docker-publish.yml
   - .gitlab/workflows/release.yml
 
 # docker-build:
