@@ -70,5 +70,5 @@ release_job:
           url: 'https://example.com/assets/2'
         - name: 'hello'
           url: "${PACKAGE_REGISTRY_URL}/${BINARY}"
-          filepath: '/pretty/url/hello'
+          filepath: '/pretty/url/bin/hello'
           link_type: 'other'
