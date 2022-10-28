@@ -1,3 +1,9 @@
+#======== Codespaces Dockerd --experimental workaround =======#
+
+# [ -e /var/run/docker.pid ] && sudo rm /var/run/docker.pid && sudo pkill dockerd
+# sudo dockerd --experimental & disown
+# sudo chmod 666 /var/run/docker.sock
+
 #============== Docker build/run lfnvchad-alpine =============#
 
 # docker build -t lfnvchad-alpine - <<<$(echo "FROM alpine:edge\nENV EDITOR=nvim\nRUN apk add alpine-sdk git lf neovim && git clone https://github.com/Nvchad/Nvchad ~/.config/nvim")
